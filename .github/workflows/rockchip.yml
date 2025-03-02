@@ -41,7 +41,7 @@ jobs:
           sudo pip3 install mako meson 
           echo "packages for legacy mesa3d (< 22.0.0)" 
           sudo apt-get install -y python2 python-mako python-is-python2 python-enum34 gettext
-          sudo curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo
+          sudo curl https://storage.googleapis.com/git-repo-downloads/repo -o /usr/bin/repo
           sudo chmod a+rx /usr/bin/repo
 
       - name: Cache Dir
