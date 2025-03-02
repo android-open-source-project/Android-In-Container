@@ -37,8 +37,8 @@ jobs:
           echo "install utils" 
           sudo apt-get install -y sudo rsync 
           echo "install packages for build mesa3d or meson related" 
-          sudo apt-get install -y python3-pip pkg-config python3-dev ninja-build \
-            pip3 install mako meson 
+          sudo apt-get install -y python3-pip pkg-config python3-dev ninja-build
+          sudo pip3 install mako meson 
           echo "packages for legacy mesa3d (< 22.0.0)" 
           sudo apt-get install -y python2 python-mako python-is-python2 python-enum34 gettext
           sudo curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo
