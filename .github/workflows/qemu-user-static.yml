@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           allowUpdates: true
-          artifacts: "qemu/INSTALL/*"
+          artifacts: "qemu/INSTALL/**"
           draft: false
           tag: qemu-user-static-${{ matrix.version }}
           name: 'qemu-user-static-${{ matrix.version }}'
