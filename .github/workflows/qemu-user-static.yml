@@ -51,6 +51,12 @@ jobs:
           ./configure --disable-system --disable-bsd-user --enable-linux-user --static --enable-strip --disable-debug-info --prefix=$PWD/INSTALL
           make -j$(nproc)
           make install
+      
+      - name: tar binary
+        run: |
+          cd qemu/INSTALL
+          rm -f ../${{ matrix.version }}.tar.gz
+          tar -zxvf ../${{ matrix.version }}.tar.gz .
 
       - name: Create/Update Release
         id: create_release
@@ -59,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           allowUpdates: true
-          artifacts: "qemu/INSTALL/**"
+          artifacts: "qemu/${{ matrix.version }}.tar.gz"
           draft: false
           tag: qemu-user-static-${{ matrix.version }}
           name: 'qemu-user-static-${{ matrix.version }}'
