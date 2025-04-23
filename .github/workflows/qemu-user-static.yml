@@ -1,0 +1,72 @@
+name: Build AOSP
+
+on:
+  push:
+    branches:
+      - qemu
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04-arm
+    strategy:
+      matrix:
+        version:
+          - stable-9.2
+    steps:
+      - name: Git Settings
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: fetch branch name
+        id: vars
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Install Dependency
+        run: |
+          sudo apt-get update
+          echo "install package for building qemu-user" 
+          sudo apt-get install -y git gcc make libglib2.0-dev libpixman-1-dev zlib1g-dev python3-venv ninja-build
+          
+      - name: Fetching Code
+        id: cache-code
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-qemu-code
+        with:
+          path: ./qemu
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
+          restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: false
+        run: |
+          git clone https://gitlab.com/qemu-project/qemu.git -b ${{ matrix.version }} --depth 1
+
+      - name: Compile Qemu
+        run: |
+          cd qemu
+          ./configure --target-list=${{ matrix.target }}--static --enable-strip --disable-debug-info
+          make -j$(nproc)
+
+      - name: Create or Update Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: qemu-user-static-${{ matrix.version }}
+          release_name: 'qemu-user-${{ matrix.version }}'
+          draft: false
+          prerelease: false
+
+      - name: Upload Release System
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/qemu-*
+          asset_name: qemu-${{ matrix.target }}
+          asset_content_type: application/octet-stream
