@@ -1,4 +1,4 @@
-name: Build AOSP
+name: Build Qemu
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt-get update
           echo "install package for building qemu-user" 
-          sudo apt-get install -y git gcc make libglib2.0-dev libpixman-1-dev zlib1g-dev python3-venv ninja-build
+          sudo apt-get install -y git gcc make build-essential libglib2.0-dev libpixman-1-dev zlib1g-dev python3-venv ninja-build flex bison
           
       - name: Fetching Code
         id: cache-code
@@ -47,8 +47,9 @@ jobs:
       - name: Compile Qemu
         run: |
           cd qemu
-          ./configure --target-list=${{ matrix.target }}--static --enable-strip --disable-debug-info
+          ./configure  --enable-linux-user --static --enable-strip --disable-debug-info --prefix=$PWD/INSTALL
           make -j$(nproc)
+          make install
 
       - name: Create or Update Release
         id: create_release
