@@ -1,6 +1,9 @@
 name: Build AOSP
 
-on: push
+on:
+  push:
+    branches:
+      - aosp
 
 jobs:
   build:
