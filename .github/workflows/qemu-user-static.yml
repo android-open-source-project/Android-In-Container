@@ -38,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
 
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+      - if: ${{ steps.cache-code.outputs.cache-hit != 'true' }}
         name: List the state of node modules
         continue-on-error: false
         run: |
@@ -68,6 +68,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: INSTALL/qemu-*
-          asset_name: qemu-${{ matrix.target }}
+          asset_path: INSTALL/
+          asset_name: qemu-${{ matrix.version }}
           asset_content_type: application/octet-stream
