@@ -51,14 +51,14 @@ jobs:
           make -j$(nproc)
           make install
 
-      - name: Create or Update Release
+      - name: Create/Update Release
         id: create_release
         uses: ncipollo/release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           allowUpdates: true
-          artifacts: INSTALL/
+          artifacts: qemu/INSTALL/
           draft: false
           tag: qemu-user-static-${{ matrix.version }}
           name: 'qemu-user-static-${{ matrix.version }}'
