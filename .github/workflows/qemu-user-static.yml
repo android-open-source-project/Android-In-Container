@@ -56,7 +56,7 @@ jobs:
         run: |
           cd qemu/INSTALL
           rm -f ../${{ matrix.version }}.tar.gz
-          tar -zxvf ../${{ matrix.version }}.tar.gz .
+          tar zcvf ../${{ matrix.version }}.tar.gz .
 
       - name: Create/Update Release
         id: create_release
