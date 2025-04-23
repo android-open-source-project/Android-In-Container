@@ -47,7 +47,7 @@ jobs:
       - name: Compile Qemu
         run: |
           cd qemu
-          ./configure  --enable-linux-user --static --enable-strip --disable-debug-info --prefix=$PWD/INSTALL
+          ./configure --disable-system --disable-bsd-user --enable-linux-user --static --enable-strip --disable-debug-info --prefix=$PWD/INSTALL
           make -j$(nproc)
           make install
 
@@ -68,6 +68,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/qemu-*
+          asset_path: INSTALL/qemu-*
           asset_name: qemu-${{ matrix.target }}
           asset_content_type: application/octet-stream
