@@ -28,22 +28,22 @@ jobs:
           echo "install package for building qemu-user" 
           sudo apt-get install -y git gcc make build-essential libglib2.0-dev libpixman-1-dev zlib1g-dev python3-venv ninja-build flex bison
           
-      - name: Fetching Code
+      - name: Restore Code
         id: cache-code
         uses: actions/cache@v4
         env:
           cache-name: cache-qemu-code
         with:
-          path: ./qemu
+          path: qemu
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
           restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.version }} 
 
       - if: ${{ steps.cache-code.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
+        name: Fetching Code
         continue-on-error: false
         run: |
           git clone https://gitlab.com/qemu-project/qemu.git -b ${{ matrix.version }} --depth 1
-
+      
       - name: Compile Qemu
         run: |
           cd qemu
@@ -53,21 +53,16 @@ jobs:
 
       - name: Create or Update Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: qemu-user-static-${{ matrix.version }}
-          release_name: 'qemu-user-${{ matrix.version }}'
+          allowUpdates: true
+          artifacts: INSTALL/
           draft: false
-          prerelease: false
+          tag: qemu-user-static-${{ matrix.version }}
+          name: 'qemu-user-static-${{ matrix.version }}'
+          replacesArtifacts: true
+          removeArtifacts: true
+          generateReleaseNotes: true
 
-      - name: Upload Release System
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: INSTALL/
-          asset_name: qemu-${{ matrix.version }}
-          asset_content_type: application/octet-stream
