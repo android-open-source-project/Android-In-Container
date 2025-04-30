@@ -34,11 +34,15 @@ jobs:
         run: |
           sudo apt-get update
           echo "install package for building" 
-          sudo apt-get install -y python3-full pip p7zip-full build-essential golang-go
+          sudo apt-get install -y python3-full pip p7zip-full build-essential
+          curl -L -O https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
           git clone https://github.com/Lua12138/fridare.git .
 
       - name: Building
         run: |
+          export PATH=$PATH:/usr/local/go/bin
           python3 -m venv venv
           source ./venv/bin/activate
           pip install frida
