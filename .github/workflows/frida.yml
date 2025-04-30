@@ -44,7 +44,7 @@ jobs:
           pip install frida
           ./fridare.sh config set frida-name ${{ matrix.magic }}
           ./fridare.sh config set port 2046
-          ./fridare.sh upgrade
+          ./fridare.sh upgrade ${{ matrix.version }}
           ./fridare.sh patch -m ${{ matrix.module }} -v ${{ matrix.version }} -os ${{ matrix.os }} -arch ${{ matrix.arch }} -o ./patched
           cd patched
           mv ${{ matrix.module }}_${{ matrix.magic }} ${{ matrix.module }}-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.version }}-${{ matrix.magic }}
