@@ -21,7 +21,7 @@ jobs:
           - 64
         version:
           - 16.7.14
-          - 16.7.1
+          - 16.7.0
         magic:
           - awsas
     steps:
@@ -47,7 +47,7 @@ jobs:
           ./fridare.sh config set port 2046
           ./fridare.sh patch -m ${{ matrix.module }} -v ${{ matrix.version }} -os ${{ matrix.os }} -arch ${{ matrix.arch }} -o ./patched
           cd patched
-          mv ${{ matrix.module }}_${{ matrix.magic }} ${{ matrix.module }}-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.version }} 
+          mv ${{ matrix.module }}_${{ matrix.magic }} ${{ matrix.module }}-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.version }}-${{ matrix.magic }}
 
       - name: Create/Update Release
         id: create_release
