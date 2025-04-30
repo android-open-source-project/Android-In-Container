@@ -35,16 +35,16 @@ jobs:
           sudo apt-get update
           echo "install package for building" 
           sudo apt-get install -y python3-full pip p7zip-full
-          git clone https://github.com/suifei/fridare.git .
+          git clone https://github.com/Lua12138/fridare.git .
 
       - name: Building
         run: |
           python3 -m venv venv
           source ./venv/bin/activate
           pip install frida
-          ./fridare.sh upgrade
           ./fridare.sh config set frida-name ${{ matrix.magic }}
           ./fridare.sh config set port 2046
+          ./fridare.sh upgrade
           ./fridare.sh patch -m ${{ matrix.module }} -v ${{ matrix.version }} -os ${{ matrix.os }} -arch ${{ matrix.arch }} -o ./patched
           cd patched
           mv ${{ matrix.module }}_${{ matrix.magic }} ${{ matrix.module }}-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.version }}-${{ matrix.magic }}
