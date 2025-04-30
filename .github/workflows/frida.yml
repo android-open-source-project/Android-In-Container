@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04-arm
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         os:
@@ -34,7 +34,7 @@ jobs:
         run: |
           sudo apt-get update
           echo "install package for building" 
-          sudo apt-get install -y python3-full pip p7zip-full
+          sudo apt-get install -y python3-full pip p7zip-full build-essential golang-go
           git clone https://github.com/Lua12138/fridare.git .
 
       - name: Building
