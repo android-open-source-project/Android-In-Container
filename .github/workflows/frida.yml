@@ -34,11 +34,11 @@ jobs:
         run: |
           sudo apt-get update
           echo "install package for building" 
-          sudo apt-get install -y python3-full pip p7zip-full build-essential
+          sudo apt-get install -y git python3-full pip p7zip-full build-essential
+          git clone https://github.com/Lua12138/fridare.git .
           curl -L -O https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
           sudo rm -rf /usr/local/go
           sudo tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
-          git clone https://github.com/Lua12138/fridare.git .
 
       - name: Building
         run: |
