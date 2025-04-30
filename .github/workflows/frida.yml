@@ -21,7 +21,7 @@ jobs:
           - 64
         version:
           - 16.7.14
-          - 16.4.1
+          - 16.6.6
         magic:
           - awsas
     steps:
