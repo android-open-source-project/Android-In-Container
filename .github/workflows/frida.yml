@@ -1,0 +1,64 @@
+name: Build Frida
+
+on:
+  push:
+    branches:
+      - frida
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04-arm
+    strategy:
+      matrix:
+        os:
+          - android
+        module:
+          - frida-server
+        arch:
+          - arm
+          - arm64
+          - x86
+          - 64
+        version:
+          - 16.7.14
+          - 16.4.1
+        magic:
+          - awsas
+    steps:
+      - name: Git Settings
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Install Dependency
+        run: |
+          sudo apt-get update
+          echo "install package for building" 
+          sudo apt-get install -y python3-full pip p7zip-full
+          git clone https://github.com/suifei/fridare.git .
+
+      - name: Building
+        run: |
+          python3 -m venv venv
+          source ./venv/bin/activate
+          pip install frida
+          ./fridare.sh upgrade
+          ./fridare.sh config set frida-name ${{ matrix.magic }}
+          ./fridare.sh config set port 2046
+          ./fridare.sh patch -m ${{ matrix.module }} -v ${{ matrix.version }} -os ${{ matrix.os }} -arch ${{ matrix.arch }} -o ./patched
+          cd patched
+          mv ${{ matrix.module }}_${{ matrix.magic }} ${{ matrix.module }}-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.version }} 
+
+      - name: Create/Update Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          allowUpdates: true
+          artifacts: "patched/${{ matrix.module }}*"
+          draft: false
+          tag: frida-${{ matrix.version }}
+          replacesArtifacts: true
+          removeArtifacts: false
+          generateReleaseNotes: true
